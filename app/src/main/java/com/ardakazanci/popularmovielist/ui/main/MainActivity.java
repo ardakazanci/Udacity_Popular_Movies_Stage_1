@@ -7,8 +7,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.ardakazanci.popularmovielist.Interface.BottomSheetListener;
 import com.ardakazanci.popularmovielist.R;
 import com.ardakazanci.popularmovielist.adapter.MovieListAdapter;
 import com.ardakazanci.popularmovielist.api.RetrofitClient;
@@ -24,16 +28,29 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BottomSheetListener {
 
     private MovieListAdapter adapter;
     private RecyclerView recyclerviewLstMovie;
+    private ProgressBar progressBar;
+    private ImageButton menuButton;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        progressBar = findViewById(R.id.progressBar);
+        menuButton = findViewById(R.id.imagebutton_check_list_type);
+
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MenuBottomSheetFragment menuBottomSheetFragment = new MenuBottomSheetFragment();
+                menuBottomSheetFragment.show(getSupportFragmentManager(), "MenuBottomSheetMenu");
+            }
+        });
 
         recyclerviewLstMovie = findViewById(R.id.recyclerview_movies);
 
@@ -64,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<MovieMainRoot> call, Response<MovieMainRoot> response) {
                 // Bağlantı Başarılı olursa.
                 if (response.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
+                    recyclerviewLstMovie.setVisibility(View.VISIBLE);
                     adapter.updateMovieList(response.body().getResults());
                 } else {
                     int statusCode = response.code();
@@ -85,4 +104,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onButtonClicked(String text) {
+        // Burada kaldık
+    }
 }
