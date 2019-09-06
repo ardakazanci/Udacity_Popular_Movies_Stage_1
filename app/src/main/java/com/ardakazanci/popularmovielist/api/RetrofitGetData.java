@@ -8,8 +8,8 @@ import retrofit2.http.Query;
 
 public interface RetrofitGetData {
 
-    @GET("movie/popular/")
-    Call<MovieMainRoot> getPopularMovies(@Query("apikey") String api_key);
+    @GET("movie/popular")
+    Call<MovieMainRoot> getPopularMovies(@Query("api_key") String api_key);
 
 
 }

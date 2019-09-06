@@ -5,10 +5,14 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -20,6 +24,7 @@ import com.ardakazanci.popularmovielist.api.RetrofitGetData;
 import com.ardakazanci.popularmovielist.common.Constants;
 import com.ardakazanci.popularmovielist.model.main.MovieMainResults;
 import com.ardakazanci.popularmovielist.model.main.MovieMainRoot;
+import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
     private RecyclerView recyclerviewLstMovie;
     private ProgressBar progressBar;
     private ImageButton menuButton;
+    private LinearLayout error_dataTransfer;
 
 
     @Override
@@ -41,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        error_dataTransfer = findViewById(R.id.error_dataTransfer);
         progressBar = findViewById(R.id.progressBar);
         menuButton = findViewById(R.id.imagebutton_check_list_type);
 
@@ -51,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
                 menuBottomSheetFragment.show(getSupportFragmentManager(), "MenuBottomSheetMenu");
             }
         });
+
 
         recyclerviewLstMovie = findViewById(R.id.recyclerview_movies);
 
@@ -64,7 +72,12 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
 
         recyclerviewLstMovie.setHasFixedSize(true);
 
-        loadPopularMovieListData();
+        // Cache && Internet Connection Control - Offline Mode
+        popularMoviesCacheControl((List<MovieMainResults>) Hawk.get(Constants.CACHE_POPULAR));
+
+
+
+
 
 
     }
@@ -84,9 +97,17 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
                     progressBar.setVisibility(View.GONE);
                     recyclerviewLstMovie.setVisibility(View.VISIBLE);
                     adapter.updateMovieList(response.body().getResults());
+
+                    // Cache
+                    Hawk.put(Constants.CACHE_POPULAR, response.body().getResults());
+
+
                 } else {
+                    progressBar.setVisibility(View.GONE);
+                    error_dataTransfer.setVisibility(View.VISIBLE);
                     int statusCode = response.code();
                     Log.e("MainActivity-Retrofit", "" + statusCode);
+
                 }
 
 
@@ -95,7 +116,8 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
             // Bağlantı başarısız olursa
             @Override
             public void onFailure(Call<MovieMainRoot> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Film bilgileri alınamadı", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                error_dataTransfer.setVisibility(View.VISIBLE);
                 Log.e("MainActivity", t.getMessage());
             }
         });
@@ -107,5 +129,32 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
     @Override
     public void onButtonClicked(String text) {
         // Burada kaldık
+
+    }
+
+    public void popularMoviesCacheControl(List<MovieMainResults> lstCacheMovieList) {
+        if (lstCacheMovieList != null && !connectionControl()) {
+
+            progressBar.setVisibility(View.GONE);
+            recyclerviewLstMovie.setVisibility(View.VISIBLE);
+            adapter.updateMovieList(lstCacheMovieList);
+
+        } else {
+
+            loadPopularMovieListData();
+
+        }
+    }
+
+
+    private boolean connectionControl() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        return isConnected;
+
     }
 }

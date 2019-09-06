@@ -36,6 +36,32 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <LinearLayout
+        android:id="@+id/error_dataTransfer"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:src="@drawable/ic_connection_problem"
+            android:layout_width="120dp"
+            android:layout_height="120dp" />
+
+        <TextView
+            android:textSize="24sp"
+            android:fontFamily="@font/roboto_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hata 401" />
+
+    </LinearLayout>
+
 
     <ProgressBar
         android:visibility="visible"
