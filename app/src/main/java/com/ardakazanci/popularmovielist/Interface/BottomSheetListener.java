@@ -2,6 +2,6 @@ package com.ardakazanci.popularmovielist.Interface;
 
 public interface BottomSheetListener {
 
-    void onButtonClicked(String text);
+    void onTextViewMenuClicked(String menuName, boolean isChecked);
 
 }

@@ -11,5 +11,13 @@ public interface RetrofitGetData {
     @GET("movie/popular")
     Call<MovieMainRoot> getPopularMovies(@Query("api_key") String api_key);
 
+    @GET("movie/top_rated")
+    Call<MovieMainRoot> getTopRatedMovies(@Query("api_key") String api_key);
+
+    @GET("movie/upcoming")
+    Call<MovieMainRoot> getUpcomingMovies(@Query("api_key") String api_key);
+
+
+
 
 }

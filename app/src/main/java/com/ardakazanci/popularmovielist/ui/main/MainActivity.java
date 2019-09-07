@@ -1,7 +1,6 @@
 package com.ardakazanci.popularmovielist.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,7 +13,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+
 
 import com.ardakazanci.popularmovielist.Interface.BottomSheetListener;
 import com.ardakazanci.popularmovielist.R;
@@ -73,11 +72,8 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
         recyclerviewLstMovie.setHasFixedSize(true);
 
         // Cache && Internet Connection Control - Offline Mode
-        popularMoviesCacheControl((List<MovieMainResults>) Hawk.get(Constants.CACHE_POPULAR));
 
-
-
-
+        loadPopularMovieListData();
 
 
     }
@@ -103,10 +99,120 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
 
 
                 } else {
+                    if (!connectionControl()) {
+                        progressBar.setVisibility(View.GONE);
+                        List<MovieMainResults> movieMainResults = Hawk.get(Constants.CACHE_POPULAR);
+                        if (movieMainResults != null) {
+                            error_dataTransfer.setVisibility(View.GONE);
+                            adapter.updateMovieList(movieMainResults);
+                        } else {
+                            error_dataTransfer.setVisibility(View.VISIBLE);
+                        }
+                        int statusCode = response.code();
+                        Log.e("MainActivity-Retrofit", "" + statusCode);
+                    }
+
+                }
+
+
+            }
+
+            // Bağlantı başarısız olursa
+            @Override
+            public void onFailure(Call<MovieMainRoot> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                error_dataTransfer.setVisibility(View.VISIBLE);
+                Log.e("MainActivity", t.getMessage());
+            }
+        });
+
+
+    }
+
+    private void loadTopRatedMoviesListData() {
+
+
+        RetrofitGetData retrofitService = RetrofitClient.getRetrofitInstance().create(RetrofitGetData.class);
+
+        Call<MovieMainRoot> call = retrofitService.getTopRatedMovies(Constants.API_KEY);
+
+        call.enqueue(new Callback<MovieMainRoot>() {
+            @Override
+            public void onResponse(Call<MovieMainRoot> call, Response<MovieMainRoot> response) {
+                // Bağlantı Başarılı olursa.
+                if (response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    error_dataTransfer.setVisibility(View.VISIBLE);
-                    int statusCode = response.code();
-                    Log.e("MainActivity-Retrofit", "" + statusCode);
+                    recyclerviewLstMovie.setVisibility(View.VISIBLE);
+                    adapter.updateMovieList(response.body().getResults());
+
+                    // Cache
+                    Hawk.put(Constants.CACHE_TOP_RATED, response.body().getResults());
+
+
+                } else {
+                    if (!connectionControl()) {
+                        progressBar.setVisibility(View.GONE);
+                        List<MovieMainResults> movieMainResults = Hawk.get(Constants.CACHE_TOP_RATED);
+                        if (movieMainResults != null) {
+                            error_dataTransfer.setVisibility(View.GONE);
+                            adapter.updateMovieList(movieMainResults);
+                        } else {
+                            error_dataTransfer.setVisibility(View.VISIBLE);
+                        }
+                        int statusCode = response.code();
+                        Log.e("MainActivity-Retrofit", "" + statusCode);
+                    }
+
+                }
+
+
+            }
+
+            // Bağlantı başarısız olursa
+            @Override
+            public void onFailure(Call<MovieMainRoot> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                error_dataTransfer.setVisibility(View.VISIBLE);
+                Log.e("MainActivity", t.getMessage());
+            }
+        });
+
+
+    }
+
+    private void loadUpcomingMoviesListData() {
+
+
+        RetrofitGetData retrofitService = RetrofitClient.getRetrofitInstance().create(RetrofitGetData.class);
+
+        Call<MovieMainRoot> call = retrofitService.getUpcomingMovies(Constants.API_KEY);
+
+        call.enqueue(new Callback<MovieMainRoot>() {
+            @Override
+            public void onResponse(Call<MovieMainRoot> call, Response<MovieMainRoot> response) {
+                // Bağlantı Başarılı olursa.
+                if (response.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
+                    recyclerviewLstMovie.setVisibility(View.VISIBLE);
+                    adapter.updateMovieList(response.body().getResults());
+
+                    // Cache
+                    Hawk.put(Constants.CACHE_UPCOMING, response.body().getResults());
+
+                } else {
+                    if (!connectionControl()) {
+                        progressBar.setVisibility(View.GONE);
+                        List<MovieMainResults> movieMainResults = Hawk.get(Constants.CACHE_UPCOMING);
+                        if (movieMainResults != null) {
+                            error_dataTransfer.setVisibility(View.GONE);
+                            adapter.updateMovieList(movieMainResults);
+                        } else {
+                            error_dataTransfer.setVisibility(View.VISIBLE);
+                        }
+                        int statusCode = response.code();
+                        Log.e("MainActivity-Retrofit", "" + statusCode);
+                    }
+
 
                 }
 
@@ -127,25 +233,27 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
 
 
     @Override
-    public void onButtonClicked(String text) {
-        // Burada kaldık
+    public void onTextViewMenuClicked(String menuType, boolean isChecked) {
 
-    }
 
-    public void popularMoviesCacheControl(List<MovieMainResults> lstCacheMovieList) {
-        if (lstCacheMovieList != null && !connectionControl()) {
+        if (menuType.equals(Constants.I_POPULAR) && isChecked) {
 
-            progressBar.setVisibility(View.GONE);
-            recyclerviewLstMovie.setVisibility(View.VISIBLE);
-            adapter.updateMovieList(lstCacheMovieList);
-
-        } else {
 
             loadPopularMovieListData();
 
+
+        } else if (menuType.equals(Constants.I_TOP_RATED) && isChecked) {
+
+            loadTopRatedMoviesListData();
+
+        } else if (menuType.equals(Constants.I_UPCOMING) && isChecked) {
+
+            loadUpcomingMoviesListData();
+
+        } else {
+            Log.e("MainActivity-MenuClick", "Tıklama İşleyici Hatası");
         }
     }
-
 
     private boolean connectionControl() {
         ConnectivityManager cm =
