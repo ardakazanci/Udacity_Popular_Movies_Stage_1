@@ -46,6 +46,12 @@ dependencies {
     // Hawk - Cache Library
     implementation "com.orhanobut:hawk:2.0.1"
 
+    // StatusBar
+    implementation 'com.jaeger.statusbarutil:library:1.5.1'
+
+
+
+
 
 
 }

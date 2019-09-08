@@ -5,17 +5,22 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 
 import com.ardakazanci.popularmovielist.Interface.BottomSheetListener;
+import com.ardakazanci.popularmovielist.Interface.OnItemClickListener;
 import com.ardakazanci.popularmovielist.R;
 import com.ardakazanci.popularmovielist.adapter.MovieListAdapter;
 import com.ardakazanci.popularmovielist.api.RetrofitClient;
@@ -23,6 +28,8 @@ import com.ardakazanci.popularmovielist.api.RetrofitGetData;
 import com.ardakazanci.popularmovielist.common.Constants;
 import com.ardakazanci.popularmovielist.model.main.MovieMainResults;
 import com.ardakazanci.popularmovielist.model.main.MovieMainRoot;
+import com.ardakazanci.popularmovielist.ui.detail.DetailActivity;
+import com.jaeger.library.StatusBarUtil;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
@@ -32,19 +39,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements BottomSheetListener {
+public class MainActivity extends AppCompatActivity implements BottomSheetListener, OnItemClickListener {
 
     private MovieListAdapter adapter;
     private RecyclerView recyclerviewLstMovie;
     private ProgressBar progressBar;
     private ImageButton menuButton;
     private LinearLayout error_dataTransfer;
-
+    private List<MovieMainResults> movieMainRoots;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         error_dataTransfer = findViewById(R.id.error_dataTransfer);
         progressBar = findViewById(R.id.progressBar);
@@ -61,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
 
         recyclerviewLstMovie = findViewById(R.id.recyclerview_movies);
 
-        adapter = new MovieListAdapter(new ArrayList<MovieMainResults>(0), getApplicationContext());
+        adapter = new MovieListAdapter(new ArrayList<MovieMainResults>(0), getApplicationContext(), this);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 2, RecyclerView.VERTICAL, false);
 
@@ -96,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
 
                     // Cache
                     Hawk.put(Constants.CACHE_POPULAR, response.body().getResults());
-
+                    movieMainRoots = response.body().getResults();
 
                 } else {
                     if (!connectionControl()) {
@@ -265,4 +273,18 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
         return isConnected;
 
     }
+
+
+    @Override
+    public void onClick(View view, int position) {
+        Intent i = new Intent(this, DetailActivity.class);
+        i.putExtra(Constants.INTENT_MOVIE_NAME, movieMainRoots.get(position).getOriginal_title());
+        i.putExtra(Constants.INTENT_MOVIE_DATE, movieMainRoots.get(position).getRelease_date());
+        i.putExtra(Constants.INTENT_MOVIE_VOTE_AVERAGE, movieMainRoots.get(position).getVote_average());
+        i.putExtra(Constants.INTENT_MOVIE_POSTER, movieMainRoots.get(position).getPoster_path());
+        i.putExtra(Constants.INTENT_MOVIE_BACKDROP, movieMainRoots.get(position).getBackdrop_path());
+        startActivity(i);
+    }
+
+
 }

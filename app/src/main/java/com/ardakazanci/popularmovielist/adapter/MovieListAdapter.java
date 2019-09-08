@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ardakazanci.popularmovielist.Interface.OnItemClickListener;
 import com.ardakazanci.popularmovielist.R;
 import com.ardakazanci.popularmovielist.common.Constants;
 import com.ardakazanci.popularmovielist.model.main.MovieMainResults;
@@ -22,11 +23,16 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Cust
 
     private List<MovieMainResults> movieDataList;
     private Context mContext;
+    private OnItemClickListener clickListener;
 
-
-    public MovieListAdapter(List<MovieMainResults> movieDataList, Context mContext) {
+    public MovieListAdapter(List<MovieMainResults> movieDataList, Context mContext, OnItemClickListener onItemClickListener) {
         this.movieDataList = movieDataList;
         this.mContext = mContext;
+        this.clickListener = onItemClickListener;
+    }
+
+    public void setClickListener(OnItemClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -60,7 +66,12 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Cust
     }
 
 
-    public class CustomViewHolder extends RecyclerView.ViewHolder {
+    public void updateMovieList(List<MovieMainResults> items) {
+        movieDataList = items;
+        notifyDataSetChanged();
+    }
+
+    public class CustomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView movie_image;
         TextView movie_title, movie_date, movie_rate;
@@ -74,11 +85,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Cust
             movie_date = itemView.findViewById(R.id.textview_item_movie_date);
             movie_rate = itemView.findViewById(R.id.textview_item_movie_rate);
 
-        }
-    }
+            itemView.setOnClickListener(this);
 
-    public void updateMovieList(List<MovieMainResults> items) {
-        movieDataList = items;
-        notifyDataSetChanged();
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (clickListener != null)
+                clickListener.onClick(v, getAdapterPosition());
+        }
     }
 }

@@ -2,7 +2,8 @@
 <resources>
 
     <color name="colorPrimary">#3f51b5</color>
-    <color name="colorPrimaryDark">#fefefa</color>
+    <color name="colorPrimaryDark">@android:color/transparent</color>
     <color name="colorAccent">#ab47bc</color>
     <color name="colorMenuIcon">#737373</color>
+
 </resources>
