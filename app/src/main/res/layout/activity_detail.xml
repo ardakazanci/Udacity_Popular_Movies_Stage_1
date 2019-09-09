@@ -9,6 +9,7 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:fitsSystemWindows="true"
+        android:id="@+id/detailAppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -17,18 +18,18 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/detailCollapsingToolbarLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="250dp"
             app:contentScrim="?attr/colorAccent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <ImageView
-                android:id="@+id/detailMovieBackDrop"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <com.flaviofaria.kenburnsview.KenBurnsView
+                android:scaleType="fitXY"
+                android:id="@+id/detailMovieBackdrop"
                 android:adjustViewBounds="true"
                 android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/sample_backdrop" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:src="@drawable/sample_backdrop" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/detailToolbar"
@@ -41,5 +42,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+
+    <include layout="@layout/activity_detail_content" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

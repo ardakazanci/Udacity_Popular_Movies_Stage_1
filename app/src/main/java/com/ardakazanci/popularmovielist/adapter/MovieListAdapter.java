@@ -92,7 +92,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Cust
         @Override
         public void onClick(View v) {
             if (clickListener != null)
-                clickListener.onClick(v, getAdapterPosition());
+                clickListener.onClick(v, getAdapterPosition(), movie_image);
         }
     }
 }

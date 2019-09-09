@@ -1,7 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="16dp">
+    <!-- Burada kaldık -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/detailMoviePoster"
+                android:layout_width="120dp"
+                android:layout_height="180dp"
+                android:scaleType="fitXY"
+                android:transitionName="simple_activity_transition"
+                android:src="@drawable/sample_poster"
+                app:riv_corner_radius="8dp" />
+
+            <LinearLayout
+                android:layout_marginStart="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="18sp"
+                    android:id="@+id/detailMovieName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Sample Movie Name" />
+
+                <TextView
+                    android:textSize="14sp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:id="@+id/detailMovieDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="06.07.2019" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+
+            <ProgressBar
+
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="56dp"
+                android:progress="2"
+                android:max="10" />
+
+
+            <ImageButton
+                android:background="@null"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="56dp"
+                android:src="@drawable/ic_favorite_checked" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 
 </androidx.core.widget.NestedScrollView>

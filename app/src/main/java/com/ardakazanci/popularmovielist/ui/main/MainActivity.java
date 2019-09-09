@@ -1,6 +1,8 @@
 package com.ardakazanci.popularmovielist.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -53,10 +56,8 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        error_dataTransfer = findViewById(R.id.error_dataTransfer);
-        progressBar = findViewById(R.id.progressBar);
-        menuButton = findViewById(R.id.imagebutton_check_list_type);
+        // UI Component Intiliaze
+        initViews();
 
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,8 +67,6 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
             }
         });
 
-
-        recyclerviewLstMovie = findViewById(R.id.recyclerview_movies);
 
         adapter = new MovieListAdapter(new ArrayList<MovieMainResults>(0), getApplicationContext(), this);
 
@@ -105,9 +104,9 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
                     // Cache
                     Hawk.put(Constants.CACHE_POPULAR, response.body().getResults());
                     movieMainRoots = response.body().getResults();
-
                 } else {
                     if (!connectionControl()) {
+                        Log.e("MainActivity", Constants.ERROR_1);
                         progressBar.setVisibility(View.GONE);
                         List<MovieMainResults> movieMainResults = Hawk.get(Constants.CACHE_POPULAR);
                         if (movieMainResults != null) {
@@ -155,10 +154,11 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
 
                     // Cache
                     Hawk.put(Constants.CACHE_TOP_RATED, response.body().getResults());
-
+                    movieMainRoots = response.body().getResults();
 
                 } else {
                     if (!connectionControl()) {
+                        Log.e("MainActivity", Constants.ERROR_1);
                         progressBar.setVisibility(View.GONE);
                         List<MovieMainResults> movieMainResults = Hawk.get(Constants.CACHE_TOP_RATED);
                         if (movieMainResults != null) {
@@ -206,9 +206,10 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
 
                     // Cache
                     Hawk.put(Constants.CACHE_UPCOMING, response.body().getResults());
-
+                    movieMainRoots = response.body().getResults();
                 } else {
                     if (!connectionControl()) {
+                        Log.e("MainActivity", Constants.ERROR_1);
                         progressBar.setVisibility(View.GONE);
                         List<MovieMainResults> movieMainResults = Hawk.get(Constants.CACHE_UPCOMING);
                         if (movieMainResults != null) {
@@ -238,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
 
 
     }
-
 
     @Override
     public void onTextViewMenuClicked(String menuType, boolean isChecked) {
@@ -274,17 +274,35 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
 
     }
 
-
     @Override
-    public void onClick(View view, int position) {
+    public void onClick(View view, int position, ImageView imageView) {
+
+
+
         Intent i = new Intent(this, DetailActivity.class);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this,
+                        imageView,
+                        ViewCompat.getTransitionName(imageView));
+
         i.putExtra(Constants.INTENT_MOVIE_NAME, movieMainRoots.get(position).getOriginal_title());
         i.putExtra(Constants.INTENT_MOVIE_DATE, movieMainRoots.get(position).getRelease_date());
         i.putExtra(Constants.INTENT_MOVIE_VOTE_AVERAGE, movieMainRoots.get(position).getVote_average());
         i.putExtra(Constants.INTENT_MOVIE_POSTER, movieMainRoots.get(position).getPoster_path());
         i.putExtra(Constants.INTENT_MOVIE_BACKDROP, movieMainRoots.get(position).getBackdrop_path());
-        startActivity(i);
+        startActivity(i, options.toBundle());
     }
+
+    private void initViews() {
+        recyclerviewLstMovie = findViewById(R.id.recyclerview_movies);
+        error_dataTransfer = findViewById(R.id.error_dataTransfer);
+        progressBar = findViewById(R.id.progressBar);
+        menuButton = findViewById(R.id.imagebutton_check_list_type);
+
+    }
+
+
 
 
 }

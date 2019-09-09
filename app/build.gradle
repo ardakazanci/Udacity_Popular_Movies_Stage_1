@@ -49,6 +49,11 @@ dependencies {
     // StatusBar
     implementation 'com.jaeger.statusbarutil:library:1.5.1'
 
+    // Rounded ImageView
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+
+    // Kenburns Effect
+    implementation 'com.flaviofaria:kenburnsview:1.0.7'
 
 
 
