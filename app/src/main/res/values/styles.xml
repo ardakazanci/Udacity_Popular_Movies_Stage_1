@@ -11,14 +11,7 @@
 
     </style>
 
-    <style name="TransparentCollapsing" parent="Theme.AppCompat.Light.NoActionBar">
 
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@android:color/transparent</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
-
-    </style>
 
 
     <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">

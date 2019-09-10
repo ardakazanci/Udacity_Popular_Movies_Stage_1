@@ -16,16 +16,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ardakazanci.popularmovielist.R;
+import com.ardakazanci.popularmovielist.api.RetrofitClient;
+import com.ardakazanci.popularmovielist.api.RetrofitGetData;
 import com.ardakazanci.popularmovielist.common.Constants;
+import com.ardakazanci.popularmovielist.model.detail.MovieDetailRoot;
 import com.ardakazanci.popularmovielist.ui.main.MainActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.jaeger.library.StatusBarUtil;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class DetailActivity extends AppCompatActivity {
@@ -34,19 +43,26 @@ public class DetailActivity extends AppCompatActivity {
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private ImageView movieBackdropImage, moviePosterImage;
     private TextView movieName, movieDate;
+    private TextView detailTxtVoteAverage;
+    private ImageButton detailFavoriteButton;
+    private TextView detailsMovieTxtOverview;
+    private TextView detailsMovieTxtType;
+    private TextView detailsMovieTagLine;
 
     // GET INTENT VARIABLE
+    private double intentGetMovieId;
     private String intentGetMovieName;
     private String intentGetMovieDate;
     private float intentGetMovieVoteAverage;
     private String intentGetMoviePosterPath;
     private String intentGetMovieBackdropPath;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
 
+        setContentView(R.layout.activity_detail);
         initViews();
 
         /* Gelen Verilerin Okunması ve eşleştirilmesini sağlayan metot */
@@ -56,6 +72,7 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
+        intentGetMovieId = intentExtras.getDouble(Constants.INTENT_MOVIE_ID, 0);
         intentGetMovieName = intentExtras.getString(Constants.INTENT_MOVIE_NAME);
         intentGetMovieDate = intentExtras.getString(Constants.INTENT_MOVIE_DATE);
         intentGetMovieVoteAverage = intentExtras.getFloat(Constants.INTENT_MOVIE_VOTE_AVERAGE, 0);
@@ -67,6 +84,7 @@ public class DetailActivity extends AppCompatActivity {
                 intentGetMovieDate != null &&
                 intentGetMoviePosterPath != null &&
                 intentGetMovieBackdropPath != null
+
         ) {
 
             setImageResource(intentGetMoviePosterPath, moviePosterImage);
@@ -75,17 +93,18 @@ public class DetailActivity extends AppCompatActivity {
             movieDate.setText(intentGetMovieDate);
             collapsingToolbarLayout.setTitleEnabled(false);
             toolbarTextShowSettings(movieName.getText().toString());
+            detailTxtVoteAverage.setText(String.valueOf(intentGetMovieVoteAverage));
+            // getMovieDetail
+            Log.e("DetailGetter", "" + intentGetMovieId);
+            getMovieDetailsResults(intentGetMovieId);
+
+
         } else {
 
             Log.e("DetailActivity", "Intent Eksik Veri");
 
         }
         /* Bundle Son */
-
-
-
-
-
 
 
         // Eski sürümler için destekleyici toolbar
@@ -107,7 +126,6 @@ public class DetailActivity extends AppCompatActivity {
             onBackPressed();
 
 
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -119,6 +137,7 @@ public class DetailActivity extends AppCompatActivity {
         // Activity UI Settings Flags
         final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY; // En Kritik bayrak. eğer ilk temas sırasınıda dahil etmek istiyorsak kullanıyoruz.
 
@@ -151,6 +170,11 @@ public class DetailActivity extends AppCompatActivity {
         moviePosterImage = findViewById(R.id.detailMoviePoster);
         detailAppBarLayout = findViewById(R.id.detailAppBarLayout);
 
+        detailTxtVoteAverage = findViewById(R.id.detailTextVoteAverage);
+        detailFavoriteButton = findViewById(R.id.detailIButtonFavorite);
+        detailsMovieTxtOverview = findViewById(R.id.detailsMovieOverview);
+        detailsMovieTxtType = findViewById(R.id.detailsMovieTxtType);
+        detailsMovieTagLine = findViewById(R.id.detailsMovieTagLine);
 
     }
 
@@ -185,6 +209,39 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+
+    private void getMovieDetailsResults(double movieID) {
+
+        int movie_id = (int) movieID;
+        RetrofitGetData rService = RetrofitClient.getRetrofitInstance().create(RetrofitGetData.class);
+        Call<MovieDetailRoot> call = rService.getMovieIdDetail(movie_id, Constants.API_KEY);
+
+        call.enqueue(new Callback<MovieDetailRoot>() {
+            @Override
+            public void onResponse(Call<MovieDetailRoot> call, Response<MovieDetailRoot> response) {
+
+                if (response.isSuccessful()) {
+                    Log.i("DetailActivity", response.body().getMovieOverview());
+                    detailsMovieTxtOverview.setText(response.body().getMovieOverview());
+                    Log.i("DetailActivity", "MovieType->" + response.body().getMovieDetailGenresResults().get(0).getGenresName());
+                    detailsMovieTxtType.setText(response.body().getMovieDetailGenresResults().get(0).getGenresName());
+                    detailsMovieTagLine.setText(response.body().getTagline());
+                } else {
+
+                    Log.e("DetailActivity", "OnResponse Problem");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieDetailRoot> call, Throwable t) {
+                Log.e("DetailActivity", "Retrofit Problem" + t.getMessage());
+            }
+        });
+
+
     }
 
 }

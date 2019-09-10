@@ -20,11 +20,11 @@
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/detailMoviePoster"
-                android:layout_width="120dp"
-                android:layout_height="180dp"
-                android:scaleType="fitXY"
-                android:transitionName="simple_activity_transition"
+                android:layout_width="160dp"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/sample_poster"
+                android:transitionName="simple_activity_transition"
                 app:riv_corner_radius="8dp" />
 
             <LinearLayout
@@ -49,34 +49,90 @@
                     android:layout_height="wrap_content"
                     tools:text="06.07.2019" />
 
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:padding="5dp"
+                    android:background="@drawable/chip_gradient_background"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/detailsMovieTxtType"
+                        android:textSize="10sp"
+                        android:textColor="@android:color/white"
+                        android:gravity="center_vertical"
+                        android:textAlignment="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="normal"
+                        android:fontFamily="@font/roboto_medium"
+                        tools:text="Drama" />
+
+
+                </LinearLayout>
+
+
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="18dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:weightSum="2">
 
 
-            <ProgressBar
-
-                style="@style/Widget.AppCompat.ProgressBar"
+            <LinearLayout
+                android:gravity="center_vertical|center_horizontal"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="56dp"
-                android:progress="2"
-                android:max="10" />
+                android:orientation="horizontal"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:background="?android:attr/selectableItemBackground"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_vote_average" />
+
+                <TextView
+                    android:id="@+id/detailTextVoteAverage"
+                    android:paddingStart="8dp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="0.5" />
 
 
-            <ImageButton
-                android:background="@null"
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:gravity="center_horizontal|center_vertical"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="56dp"
-                android:src="@drawable/ic_favorite_checked" />
+                android:orientation="horizontal"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:id="@+id/detailIButtonFavorite"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_favorite_uncheck" />
+
+                <TextView
+                    android:paddingStart="8dp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Favorite" />
+
+
+            </LinearLayout>
 
 
         </LinearLayout>

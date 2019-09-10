@@ -25,6 +25,7 @@ public class Constants {
     public static final String INTENT_MOVIE_POSTER = "INTENT_MOVIE_POSTER";
     public static final String INTENT_MOVIE_BACKDROP = "INTENT_MOVIE_BACKDROP";
     public static final String INTENT_MOVIE_VOTE_AVERAGE = "INTENT_MOVIE_VOTE_AVERAGE";
+    public static final String INTENT_MOVIE_ID = "INTENT_MOVIE_ID";
 
 
 
