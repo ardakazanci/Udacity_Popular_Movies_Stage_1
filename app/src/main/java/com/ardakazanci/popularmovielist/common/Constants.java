@@ -5,6 +5,7 @@ public class Constants {
     public static final String BASE_URL = "https://api.themoviedb.org/3/";
     public static final String API_KEY = "";
     public static final String BASE_IMAGE_POSTER_URL = "https://image.tmdb.org/t/p/w500";
+    public static final String BASE_VIDEO_URL = "https://www.youtube.com/watch?v=";
 
     // Cache constants
     public static final String CACHE_POPULAR = "POPULAR";
@@ -26,8 +27,6 @@ public class Constants {
     public static final String INTENT_MOVIE_BACKDROP = "INTENT_MOVIE_BACKDROP";
     public static final String INTENT_MOVIE_VOTE_AVERAGE = "INTENT_MOVIE_VOTE_AVERAGE";
     public static final String INTENT_MOVIE_ID = "INTENT_MOVIE_ID";
-
-
 
 
 }

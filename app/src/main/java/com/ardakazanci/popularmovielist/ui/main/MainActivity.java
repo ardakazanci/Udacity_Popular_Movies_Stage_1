@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         // UI Component Intiliaze
@@ -315,7 +314,6 @@ public class MainActivity extends AppCompatActivity implements BottomSheetListen
         final View decorView = getWindow().getDecorView();
         decorView.setOnSystemUiVisibilityChangeListener
                 (new View.OnSystemUiVisibilityChangeListener() {
-
                     @Override
                     public void onSystemUiVisibilityChange(int visibility) {
                         if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {

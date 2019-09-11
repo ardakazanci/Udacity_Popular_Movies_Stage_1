@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
+    defaultConfig{
+        vectorDrawables.useSupportLibrary = true
+    }
     compileSdkVersion 28
     buildToolsVersion "29.0.1"
     defaultConfig {
@@ -54,6 +57,9 @@ dependencies {
 
     // Kenburns Effect
     implementation 'com.flaviofaria:kenburnsview:1.0.7'
+
+    // Video Player
+
 
 
 

@@ -1,6 +1,8 @@
 package com.ardakazanci.popularmovielist.api;
 
+import com.ardakazanci.popularmovielist.model.detail.MovieDetailCastRoot;
 import com.ardakazanci.popularmovielist.model.detail.MovieDetailRoot;
+import com.ardakazanci.popularmovielist.model.detail.MovieDetailVideoRoot;
 import com.ardakazanci.popularmovielist.model.main.MovieMainRoot;
 
 import retrofit2.Call;
@@ -22,7 +24,11 @@ public interface RetrofitGetData {
     @GET("movie/{movie_id}")
     Call<MovieDetailRoot> getMovieIdDetail(@Path("movie_id") int movie_id, @Query("api_key") String api_key);
 
+    @GET("movie/{movie_id}/credits")
+    Call<MovieDetailCastRoot> getMovieDetailCast(@Path("movie_id") int movie_id, @Query("api_key") String api_key);
 
+    @GET("movie/{movie_id}/videos")
+    Call<MovieDetailVideoRoot> getMovieVideo(@Path("movie_id") int movie_id, @Query("api_key") String api_key);
 
 
 

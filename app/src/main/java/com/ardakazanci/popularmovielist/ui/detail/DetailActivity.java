@@ -6,6 +6,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,15 +25,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ardakazanci.popularmovielist.R;
+import com.ardakazanci.popularmovielist.adapter.MovieCastListAdapter;
+import com.ardakazanci.popularmovielist.adapter.MovieVideoListAdapter;
 import com.ardakazanci.popularmovielist.api.RetrofitClient;
 import com.ardakazanci.popularmovielist.api.RetrofitGetData;
 import com.ardakazanci.popularmovielist.common.Constants;
+import com.ardakazanci.popularmovielist.model.detail.MovieDetailCastResult;
+import com.ardakazanci.popularmovielist.model.detail.MovieDetailCastRoot;
 import com.ardakazanci.popularmovielist.model.detail.MovieDetailRoot;
+import com.ardakazanci.popularmovielist.model.detail.MovieDetailVideoResult;
+import com.ardakazanci.popularmovielist.model.detail.MovieDetailVideoRoot;
 import com.ardakazanci.popularmovielist.ui.main.MainActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.jaeger.library.StatusBarUtil;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,13 +68,34 @@ public class DetailActivity extends AppCompatActivity {
     private String intentGetMoviePosterPath;
     private String intentGetMovieBackdropPath;
 
+    // Recyclerview
+    private RecyclerView recyclerViewCastList;
 
+    private MovieCastListAdapter movieCastListAdapter;
+    private RecyclerView recyclerViewVideoList;
+    private MovieVideoListAdapter movieVideoListAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_detail);
         initViews();
+        supportStartPostponedEnterTransition();
+
+
+        movieCastListAdapter = new MovieCastListAdapter(new ArrayList<MovieDetailCastResult>(0), getApplicationContext());
+        RecyclerView.LayoutManager layoutManagerCast = new LinearLayoutManager(getApplicationContext(), RecyclerView.HORIZONTAL, false);
+        recyclerViewCastList.setLayoutManager(layoutManagerCast);
+        recyclerViewCastList.setAdapter(movieCastListAdapter);
+        recyclerViewCastList.setHasFixedSize(true);
+
+
+
+
+
+
+
+
 
         /* Gelen Verilerin Okunması ve eşleştirilmesini sağlayan metot */
         /* Bundle Başlangıç */
@@ -97,6 +129,8 @@ public class DetailActivity extends AppCompatActivity {
             // getMovieDetail
             Log.e("DetailGetter", "" + intentGetMovieId);
             getMovieDetailsResults(intentGetMovieId);
+            getMovieDetailsCastProfile(intentGetMovieId);
+            getMovieDetailsVideo(intentGetMovieId);
 
 
         } else {
@@ -105,6 +139,12 @@ public class DetailActivity extends AppCompatActivity {
 
         }
         /* Bundle Son */
+
+        movieVideoListAdapter = new MovieVideoListAdapter(new ArrayList<MovieDetailVideoResult>(0), getApplicationContext(), intentGetMovieId);
+        RecyclerView.LayoutManager layoutManagerVideo = new LinearLayoutManager(getApplicationContext(), RecyclerView.HORIZONTAL, false);
+        recyclerViewVideoList.setLayoutManager(layoutManagerVideo);
+        recyclerViewVideoList.setAdapter(movieVideoListAdapter);
+        recyclerViewVideoList.setHasFixedSize(true);
 
 
         // Eski sürümler için destekleyici toolbar
@@ -116,6 +156,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
     }
+
 
     /* BackPressed durumunu ele alan metot. */
     @Override
@@ -164,6 +205,10 @@ public class DetailActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.detailToolbar);
         collapsingToolbarLayout = findViewById(R.id.detailCollapsingToolbarLayout);
 
+        recyclerViewCastList = findViewById(R.id.detailCastList);
+
+
+
         movieBackdropImage = findViewById(R.id.detailMovieBackdrop);
         movieDate = findViewById(R.id.detailMovieDate);
         movieName = findViewById(R.id.detailMovieName);
@@ -175,6 +220,8 @@ public class DetailActivity extends AppCompatActivity {
         detailsMovieTxtOverview = findViewById(R.id.detailsMovieOverview);
         detailsMovieTxtType = findViewById(R.id.detailsMovieTxtType);
         detailsMovieTagLine = findViewById(R.id.detailsMovieTagLine);
+
+        recyclerViewVideoList = findViewById(R.id.detailVideoList);
 
     }
 
@@ -238,6 +285,60 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<MovieDetailRoot> call, Throwable t) {
                 Log.e("DetailActivity", "Retrofit Problem" + t.getMessage());
+            }
+        });
+
+
+    }
+
+    private void getMovieDetailsCastProfile(double movie_id) {
+
+        int movieIntId = (int) movie_id;
+
+
+        RetrofitGetData rService = RetrofitClient.getRetrofitInstance().create(RetrofitGetData.class);
+
+        Call<MovieDetailCastRoot> castResultCall = rService.getMovieDetailCast(movieIntId, Constants.API_KEY);
+
+        castResultCall.enqueue(new Callback<MovieDetailCastRoot>() {
+            @Override
+            public void onResponse(Call<MovieDetailCastRoot> call, Response<MovieDetailCastRoot> response) {
+
+                assert response.body() != null;
+                movieCastListAdapter.updateMovieCastList(response.body().getMovieCastList());
+
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieDetailCastRoot> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+
+    private void getMovieDetailsVideo(double intentGetMovieId) {
+
+        int movieIntId = (int) intentGetMovieId;
+
+        RetrofitGetData rService = RetrofitClient.getRetrofitInstance().create(RetrofitGetData.class);
+
+        Call<MovieDetailVideoRoot> castResultCall = rService.getMovieVideo(movieIntId, Constants.API_KEY);
+
+        castResultCall.enqueue(new Callback<MovieDetailVideoRoot>() {
+            @Override
+            public void onResponse(Call<MovieDetailVideoRoot> call, Response<MovieDetailVideoRoot> response) {
+
+                movieVideoListAdapter.updateMovieVideo(response.body().getMovieDetailVideoResults());
+
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieDetailVideoRoot> call, Throwable t) {
+                Log.e("DetailActivity", "" + t.getMessage());
             }
         });
 

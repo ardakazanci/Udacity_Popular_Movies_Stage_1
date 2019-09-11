@@ -7,6 +7,10 @@ import java.util.List;
 
 public class MovieDetailRoot {
 
+    @SerializedName("backdrop_path")
+    @Expose
+    private String detail_backdrop_path;
+
     @SerializedName("genres")
     @Expose
     private List<MovieDetailGenresResult> movieDetailGenresResults;
@@ -19,10 +23,11 @@ public class MovieDetailRoot {
     @Expose
     private String tagline;
 
-    public MovieDetailRoot(List<MovieDetailGenresResult> movieDetailGenresResults, String movieOverview, String tagline) {
+    public MovieDetailRoot(List<MovieDetailGenresResult> movieDetailGenresResults, String movieOverview, String tagline, String detail_backdrop_path) {
         this.movieDetailGenresResults = movieDetailGenresResults;
         this.movieOverview = movieOverview;
         this.tagline = tagline;
+        this.detail_backdrop_path = detail_backdrop_path;
     }
 
     public String getTagline() {
@@ -49,5 +54,11 @@ public class MovieDetailRoot {
         this.movieOverview = movieOverview;
     }
 
+    public String getDetail_backdrop_path() {
+        return detail_backdrop_path;
+    }
 
+    public void setDetail_backdrop_path(String detail_backdrop_path) {
+        this.detail_backdrop_path = detail_backdrop_path;
+    }
 }
