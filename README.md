@@ -18,6 +18,8 @@ This is an App made for Udacity Android Nanodegree Project 2. Its an Android app
 
 [![Udacity Popular Movies Stage 1](https://github.com/ardakazanci/Udacity_Popular_Movies_Stage_1/raw/master/screenshots/Screenshot_1568222701_pixel_very_silver_portrait.png "Udacity Popular Movies Stage 1")](https://github.com/ardakazanci/Udacity_Popular_Movies_Stage_1/raw/master/screenshots/Screenshot_1568222701_pixel_very_silver_portrait.png "Udacity Popular Movies Stage 1")
 
+[![Udacity Popular Movies Stage 1](https://github.com/ardakazanci/Udacity_Popular_Movies_Stage_1/raw/master/screenshots/Screenshot_1568222721_pixel_very_silver_portrait.png "Udacity Popular Movies Stage 1")](https://github.com/ardakazanci/Udacity_Popular_Movies_Stage_1/raw/master/screenshots/Screenshot_1568222721_pixel_very_silver_portrait.png "Udacity Popular Movies Stage 1")
+
 [![Udacity Popular Movies Stage 1](https://github.com/ardakazanci/Udacity_Popular_Movies_Stage_1/raw/master/screenshots/Screenshot_1568222713_pixel_very_silver_portrait.png "Udacity Popular Movies Stage 1")](https://github.com/ardakazanci/Udacity_Popular_Movies_Stage_1/raw/master/screenshots/Screenshot_1568222713_pixel_very_silver_portrait.png "Udacity Popular Movies Stage 1")
 
 [![Udacity Popular Movies Stage 1](https://github.com/ardakazanci/Udacity_Popular_Movies_Stage_1/raw/master/screenshots/Screenshot_1568222725_pixel_very_silver_portrait.png "Udacity Popular Movies Stage 1")](https://github.com/ardakazanci/Udacity_Popular_Movies_Stage_1/raw/master/screenshots/Screenshot_1568222725_pixel_very_silver_portrait.png "Udacity Popular Movies Stage 1")
